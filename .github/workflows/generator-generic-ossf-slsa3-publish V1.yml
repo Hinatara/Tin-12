@@ -1,0 +1,53 @@
+## Workflow này được viết lại dựa trên nguồn:
+## https://taphuan.nxbgd.vn/#/training-course-detail/83c3734f-6710-3193-a669-33f3502aced1
+## Tác giả: Hinata (người thực hiện commit Git)
+## Người chỉnh sửa: hinata
+name: SLSA Generic Generator - Bản demo chỉnh sửa
+on:
+  workflow_dispatch:
+  release:
+    types: [created]  # Sửa lại từ 'Git' sang 'created' theo chuẩn GitHub
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Sửa lại từ 'mọi thiết bị'
+    outputs:
+      digests: ${{ steps.hash.outputs.digests }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ========================================================
+      # Bước 1: Tải tài liệu học tập và xử lý
+      # ========================================================
+      - name: Download and process materials
+        run: |
+          # Bước 1: Tải file mẫu
+          curl -LO https://example.com/materials.zip
+          
+          # Bước 2: Giải nén file
+          unzip materials.zip -d ./docs
+          
+          # Bước 3: Tạo artifacts
+          echo "Tài liệu đã xử lý" > processed_docs.txt
+
+      # ========================================================
+      # Bước 2: Tạo hash cho các artifacts
+      # ========================================================
+      - name: Generate subject for provenance
+        id: hash
+        run: |
+          set -euo pipefail
+          files=$(ls processed_docs.txt materials.zip)
+          echo "hashes=$(sha256sum $files | base64 -w0)" >> "${GITHUB_OUTPUT}"
+
+  provenance:
+    needs: [build]
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.4.0
+    with:
+      base64-subjects: "${{ needs.build.outputs.digests }}"
+      upload-assets: true
