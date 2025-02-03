@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Biểu mẫu đăng ký thành viên</title>
+
+</head>
+
+<body>
+
+<h2>Đăng ký thành viên</h2>
+
+<form action="/submit_registration" method="post">
+
+  <label for="fullname">Họ và tên:</label><br>
+
+  <input type="text" id="fullname" name="fullname" required><br>
+
+  <label for="email">Email:</label><br>
+
+  <input type="email" id="email" name="email" required><br>
+
+  <label for="birthdate">Ngày sinh:</label><br>
+
+  <input type="date" id="birthdate" name="birthdate" required><br>
+
+  <label for="membership">Loại hình thành viên:</label><br>
+
+  <select id="membership" name="membership">
+
+    <option value="basic">Thành viên cơ bản</option>
+
+    <option value="premium">Thành viên cao cấp</option>
+
+  </select><br>
+
+  <input type="submit" value="Đăng ký">
+
+</form>
+
+</body>
+
+</html>
